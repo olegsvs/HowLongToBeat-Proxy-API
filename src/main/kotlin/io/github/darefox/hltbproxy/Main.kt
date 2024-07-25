@@ -6,6 +6,6 @@ import org.http4k.server.asServer
 
 
 fun main(args: Array<String>) {
-    val port = System.getenv("PORT")?.toIntOrNull() ?: 8080
+    val port = System.getenv("HLTB_PORT")?.toIntOrNull() ?: 8444
     serverRoutes.asServer(Jetty(port)).start()
 }

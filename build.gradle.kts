@@ -1,8 +1,9 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 val coroutinesVersion = "1.6.4"
 val http4kVersion = "4.37.0.0"
 
 plugins {
-    kotlin("jvm") version "1.8.0"
+    kotlin("jvm") version "1.8.21"
     kotlin("plugin.serialization") version "1.8.0"
     id("com.github.johnrengelman.shadow") version "7.1.2"
     application
@@ -46,14 +47,37 @@ tasks.test {
     useJUnitPlatform()
 }
 
-kotlin {
-    jvmToolchain(17)
+//kotlin {
+//    jvmToolchain(17)
+//}
+
+//tasks.jar {
+//    manifest.attributes["Main-Class"] = "io.github.darefox.hltbproxy.MainKt"
+//}
+
+application {
+    mainClass.set("io.github.darefox.hltbproxy.MainKt")
 }
 
 tasks.jar {
     manifest.attributes["Main-Class"] = "io.github.darefox.hltbproxy.MainKt"
+    val dependencies = configurations
+        .runtimeClasspath
+        .get()
+        .map(::zipTree)
+    from(dependencies)
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
-application {
-    mainClass.set("io.github.darefox.hltbproxy.MainKt")
+val compileKotlin: KotlinCompile by tasks
+compileKotlin.kotlinOptions {
+    jvmTarget = "1.8"
+}
+val compileTestKotlin: KotlinCompile by tasks
+compileTestKotlin.kotlinOptions {
+    jvmTarget = "1.8"
+}
+
+tasks.withType<KotlinCompile> {
+    kotlinOptions.jvmTarget = "1.8"
 }
